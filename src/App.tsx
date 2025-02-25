@@ -2,6 +2,8 @@ import emptyIcon from "./assets/icons/empty-icon.svg";
 import finishedIcon from "./assets/icons/done-icon.svg";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import useLocalStorage from "./hooks/useLocalStorage";
+import useCleanLocalStorage from "./hooks/useCleanLocalStorage";
 import "./assets/styles/global.scss";
 
 interface TodoType {
@@ -9,10 +11,12 @@ interface TodoType {
   text: string;
   isCompleted: boolean;
 }
+type FilterType = "all" | "active" | "finished";
 
 function App() {
-  const [todos, setTodos] = useState<Array<TodoType>>([]);
+  const [todos, setTodos] = useLocalStorage<TodoType[]>("todos", []);
   const [inputValue, setInputValue] = useState<string>("");
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const addTask = () => {
     if (!inputValue.trim()) return;
@@ -57,6 +61,14 @@ function App() {
     setTooltip(null);
   };
 
+  const filterTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.isCompleted;
+    if (filter === "finished") return todo.isCompleted;
+    return true;
+  });
+
+  const cleanStorage = useCleanLocalStorage(setTodos);
+
   return (
     <div className="todo-lists-wrapper">
       <div className="todo-lists-header">TODOS</div>
@@ -73,8 +85,8 @@ function App() {
         </button>
       </section>
       <section className="todos-list">
-        {todos.length > 0 ? (
-          todos.map((todo) => (
+        {filterTodos.length > 0 ? (
+          filterTodos.map((todo) => (
             <div
               key={todo.id}
               className={`todo ${todo.isCompleted ? "completed" : ""}`}
@@ -104,7 +116,31 @@ function App() {
         )}
       </section>
       <section className="todo-lists-info">
-        <div className="total-todo">{todos.length} todos left</div>
+        <div className="total-todo">
+          {todos.filter((todo) => !todo.isCompleted).length} todos left
+        </div>
+        <div className="filters">
+          <div className="filter all">
+            <button onClick={() => setFilter("all")} className="btn">
+              All
+            </button>
+          </div>
+          <div className="filter active">
+            <button onClick={() => setFilter("active")} className="btn">
+              Active
+            </button>
+          </div>
+          <div className="filter completed">
+            <button onClick={() => setFilter("finished")} className="btn">
+              Completed
+            </button>
+          </div>
+        </div>
+        <div className="clean">
+          <button onClick={() => cleanStorage()} className="btn">
+            Clean Storage
+          </button>
+        </div>
       </section>
       {tooltip && (
         <div

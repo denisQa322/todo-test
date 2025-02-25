@@ -12,7 +12,7 @@
 }
 
 .todo-lists-wrapper {
-  width: 360px;
+  width: 560px;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -31,6 +31,7 @@
       font-size: 25px;
       border-radius: 5px 0 0 5px;
       border: 1px solid black;
+      width: 523px;
     }
     button {
       font-size: 25px;
@@ -81,11 +82,50 @@
     }
     .no-todo {
       font-size: 30px;
+      text-align: center;
     }
   }
   .todo-lists-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: grey;
     .total-todo {
-      opacity: 0.5;
+      font-size: 20px;
+    }
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      .filter {
+        &:hover {
+          border: 1px solid grey;
+          border-radius: 5px;
+        }
+        .btn {
+          font-size: 20px;
+          color: grey;
+          padding: 5px;
+          &:focus,
+          &:active {
+            font-size: 20px;
+            border: inherit;
+            outline: none;
+            transform: none;
+          }
+        }
+      }
+    }
+    .clean {
+      &:hover {
+        border: 1px solid grey;
+        border-radius: 5px;
+      }
+      .btn {
+        font-size: 20px;
+        color: grey;
+        padding: 3px 5px;
+      }
     }
   }
 }
